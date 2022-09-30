@@ -9,6 +9,8 @@ namespace ANPEL.WebDemo.EntityFrameworkCore
      * (like Add-Migration and Update-Database commands) */
     public class WebDemoDbContextFactory : IDesignTimeDbContextFactory<WebDemoDbContext>
     {
+        //public static readonly ILoggerFactory MyLoggerFactory
+//= LoggerFactory.Create(builder => { builder.AddConsole(); });
         public WebDemoDbContext CreateDbContext(string[] args)
         {
             WebDemoEfCoreEntityExtensionMappings.Configure();
@@ -16,6 +18,7 @@ namespace ANPEL.WebDemo.EntityFrameworkCore
             var configuration = BuildConfiguration();
 
             var builder = new DbContextOptionsBuilder<WebDemoDbContext>()
+                //.UseLoggerFactory(MyLoggerFactory)
                 .UseMySql(configuration.GetConnectionString("Default"), MySqlServerVersion.LatestSupportedServerVersion)
                 ;
             return new WebDemoDbContext(builder.Options);

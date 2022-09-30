@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -27,8 +26,8 @@ namespace ANPEL.WebDemo.EntityFrameworkCore
     {
         /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
-        public static readonly LoggerFactory LoggerFactory = new LoggerFactory(new[] { new DebugLoggerProvider() });
-
+        public static readonly ILoggerFactory MyLoggerFactory
+    = LoggerFactory.Create(builder => { builder.AddConsole(); });
         #region Entities from the modules
 
         /* Notice: We only implemented IIdentityDbContext and ITenantManagementDbContext
@@ -91,17 +90,14 @@ namespace ANPEL.WebDemo.EntityFrameworkCore
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.LogTo(System.Console.WriteLine, new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting });
-            //输出到vs输出窗口
-            optionsBuilder.LogTo((msg) => System.Diagnostics.Trace.WriteLine(msg), new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting });
+            //显示敏感数据
+            //optionsBuilder.EnableSensitiveDataLogging(true);
             //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)默认不跟踪
             //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             //将sql数据到控制台
-            optionsBuilder.UseLoggerFactory(LoggerFactory);
-            //显示敏感数据
-            optionsBuilder.EnableSensitiveDataLogging(true);
+            optionsBuilder.UseLoggerFactory(MyLoggerFactory);
             //optionsBuilder.UseLazyLoadingProxies(); //启用延迟加载
+            //base.OnConfiguring(optionsBuilder);
         }
     }
 }
