@@ -16,7 +16,7 @@ namespace ANPEL.WebDemo.Controllers
     /// </summary>
     [Route("Products")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ProductController : AbpController
     {
         public IProductAppService _productAppService { set; get; }

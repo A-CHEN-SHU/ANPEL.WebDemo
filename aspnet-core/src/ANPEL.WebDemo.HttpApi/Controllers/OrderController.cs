@@ -16,7 +16,7 @@ namespace ANPEL.WebDemo.Controllers
     /// </summary>
     [Route("Ordes")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class OrderController : AbpController
     {
         public IOrderAppService _orderAppService;
