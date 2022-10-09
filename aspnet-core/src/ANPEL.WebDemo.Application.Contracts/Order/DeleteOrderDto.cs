@@ -4,7 +4,8 @@ using System.Text;
 
 namespace ANPEL.WebDemo.Order
 {
-    class DeteleOrderDto
+    public class DeteleOrderDto
     {
+        public Guid Id { get; set; }
     }
 }

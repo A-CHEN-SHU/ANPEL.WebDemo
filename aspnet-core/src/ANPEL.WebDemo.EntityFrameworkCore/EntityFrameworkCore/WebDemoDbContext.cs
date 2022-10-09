@@ -91,7 +91,7 @@ namespace ANPEL.WebDemo.EntityFrameworkCore
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //显示敏感数据
-            //optionsBuilder.EnableSensitiveDataLogging(true);
+            optionsBuilder.EnableSensitiveDataLogging(true);
             //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)默认不跟踪
             //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             //将sql数据到控制台

@@ -4,14 +4,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.Domain.Repositories;
 
 namespace ANPEL.WebDemo.Product
 {
-    public class Product/* : FullAuditedAggregateRoot<Guid>*/
+    public class Product/* : FullAuditedAggregateRoot<Guid>*/: AggregateRoot<Guid>
     {
-        public  Guid Id { set; get; } // 商品主键
+        //public  Guid Id { set; get; } // 商品主键
         public string ProductCode { set; get; }    //商品编码
         public string ProductUrl { set; get; }         // 商品主图
         public string ProductTitle { set; get; }       //商品标题
@@ -30,7 +31,7 @@ namespace ANPEL.WebDemo.Product
             ProductImages = new Collection<ProductImage>();
         }
 
-        public Product(Guid id) /*: base(id)*/
+        public Product(Guid id) : base(id)
         {
             ProductImages = new Collection<ProductImage>();
         }

@@ -1,4 +1,5 @@
 ﻿using ANPEL.WebDemo.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace ANPEL.WebDemo.Controllers
     /// </summary>
     [Route("Products")]
     [ApiController]
+    //[Authorize]
     public class ProductController : AbpController
     {
         public IProductAppService _productAppService { set; get; }

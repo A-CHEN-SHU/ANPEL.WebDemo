@@ -18,27 +18,27 @@ namespace ANPEL.WebDemo.Product
     /// 商品服务实现
     /// </summary>
     [Dependency(ServiceLifetime.Transient)]
-    public class ProductAppService : IProductAppService
+    public class ProductAppService :/* WebDemoAppService, */IProductAppService
     {
         public IProductRepository _productRepository; // 商品仓储
 
         //public ProductManager _ProductManager; // 商品领域服务
         public IGuidGenerator GuidGenerator { get; set; } // Guid生成器
 
-        //public IObjectMapper ObjectMapper { get; set; }
+        //public IObjectMapper _objectMapper { get; set; }
 
         private WebDemoDbContext _webDemoDbContext;
 
-        public IUnitOfWorkManager _unitOfWorkManager;//
+        //public IUnitOfWorkManager _unitOfWorkManager;
 
-        public ProductAppService(IProductRepository productRepository, IGuidGenerator guidGenerator/*, IObjectMapper objectMapper*/, WebDemoDbContext webDemoDbContext, IUnitOfWorkManager unitOfWorkManager)
+        public ProductAppService(IProductRepository productRepository, IGuidGenerator guidGenerator, WebDemoDbContext webDemoDbContext/*, IObjectMapper objectMapper, IUnitOfWorkManager unitOfWorkManager*/)
         {
             _productRepository = productRepository;
             ////_ProductManager = productManager;
             GuidGenerator = guidGenerator;
-            //ObjectMapper = objectMapper;
+            //_objectMapper = objectMapper;
             _webDemoDbContext = webDemoDbContext;
-            _unitOfWorkManager = unitOfWorkManager;
+            //_unitOfWorkManager = unitOfWorkManager;
         }
         /// <summary>
         /// 查询所有商品
@@ -58,6 +58,9 @@ namespace ANPEL.WebDemo.Product
             IMapper mapper = configuration.CreateMapper();
 
             List<ProductDto> productDtos = mapper.Map<IEnumerable<Product>, List<ProductDto>>(products);
+            //继承WebDemoAppService ，里面继承了ApplicationService，可以直接使用各种方法，比如ObjectMapper映射
+            //List<ProductDto> productDtos = ObjectMapper.Map<IEnumerable<Product>, List<ProductDto>>(products);
+
             return productDtos;
         }
         /// <summary>
@@ -116,14 +119,12 @@ namespace ANPEL.WebDemo.Product
         /// <param name="updateProductDto"></param>
         public void Update(UpdateProductDto updateProductDto)
         {
-            Product product = new Product();
-
+            Product product = _productRepository.GetProductById(updateProductDto.id);
             // 1、AutoMapper自动映射实体
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UpdateProductDto, Product>();
             });
-
             IMapper mapper = configuration.CreateMapper();
             product = mapper.Map(updateProductDto, product);
             _productRepository.Update(product);
@@ -135,7 +136,10 @@ namespace ANPEL.WebDemo.Product
         /// <param name="id"></param>
         public void Delete(Guid id)
         {
-            Product product = new Product { Id = id };
+
+            Product product = new Product(id);
+            Product product1 = _productRepository.GetProductById(id);
+            product.ConcurrencyStamp = product1.ConcurrencyStamp;
             _productRepository.Delete(product);
         }
         /// <summary>
@@ -180,7 +184,7 @@ namespace ANPEL.WebDemo.Product
                 throw new NotImplementedException("商品不存在");
             }
 
-            // 2、添加商品图片
+            // 2、移除商品图片
             product.RemoveProductImage(deleteProductImageDto.ProductImageId);
 
             // 3、更新商品聚合根对象

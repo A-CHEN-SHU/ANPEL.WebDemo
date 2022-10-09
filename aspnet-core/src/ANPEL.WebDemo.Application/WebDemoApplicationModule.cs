@@ -28,7 +28,7 @@ namespace ANPEL.WebDemo
             {
                 options.AddMaps<WebDemoApplicationModule>();
                 //使用自定义map
-                //options.AddProfile<WebDemoApplicationAutoMapperProfile>();
+                options.AddProfile<WebDemoApplicationAutoMapperProfile>();
             });
         }
     }

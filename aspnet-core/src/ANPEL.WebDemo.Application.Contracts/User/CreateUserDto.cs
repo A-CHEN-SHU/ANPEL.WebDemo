@@ -4,7 +4,8 @@ using System.Text;
 
 namespace ANPEL.WebDemo.User
 {
-    class CreateUserDto
+    public class CreateUserDto
     {
+
     }
 }
