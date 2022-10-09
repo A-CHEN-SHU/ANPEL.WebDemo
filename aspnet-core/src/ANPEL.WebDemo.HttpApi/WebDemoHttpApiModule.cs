@@ -8,6 +8,8 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement.HttpApi;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
+using Microsoft.Extensions.DependencyInjection;
+using ANPEL.WebDemo.Filters;
 
 namespace ANPEL.WebDemo
 {
@@ -24,6 +26,9 @@ namespace ANPEL.WebDemo
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
+            context.Services.AddMvc(
+               options => options.Filters.Add<ActionFilter>()
+           );
             ConfigureLocalization();
         }
 
