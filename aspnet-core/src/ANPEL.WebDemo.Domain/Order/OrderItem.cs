@@ -14,7 +14,7 @@ namespace ANPEL.WebDemo.Order
         public Guid Id { set; get; } // 主键
         public Guid OrderId { set; get; } // 订单编号
         public string OrderSn { set; get; } // 订单号
-        public int ProductId { set; get; } // 商品编号
+        public Guid ProductId { set; get; } // 商品编号
         public string ProductUrl { set; get; } // 商品主图
         public string ProductName { set; get; }// 商品名称
         public decimal ItemPrice { set; get; }  // 订单项单价

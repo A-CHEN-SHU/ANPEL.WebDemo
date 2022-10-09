@@ -58,8 +58,8 @@ namespace ANPEL.WebDemo.Controllers
         [HttpPost]
         public ActionResult<OrderDto> CreateProduct(CreateOrderDto createOrderDto)
         {
-            _orderAppService.Create(createOrderDto);
-            return CreatedAtAction("GetOrder", createOrderDto);
+            return _orderAppService.Create(createOrderDto);
+            //return CreatedAtAction("GetOrder", createOrderDto);
         }
         [HttpGet]
         private bool OrderExists(Guid id)

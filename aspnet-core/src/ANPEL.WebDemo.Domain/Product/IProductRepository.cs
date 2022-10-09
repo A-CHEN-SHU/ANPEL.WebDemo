@@ -9,7 +9,7 @@ namespace ANPEL.WebDemo.Product
     /// <summary>
     /// 定义商品仓储
     /// </summary>
-    public interface  IProductRepository
+    public interface IProductRepository
     {
         IEnumerable<Product> GetProducts();
         Product GetProductById(Guid id);

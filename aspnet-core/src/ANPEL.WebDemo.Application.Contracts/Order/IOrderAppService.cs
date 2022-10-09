@@ -11,7 +11,7 @@ namespace ANPEL.WebDemo.Order
     {
         List<OrderDto> GetOrders();
         OrderDto GetOrderInfoById(Guid id);
-        void Create(CreateOrderDto createOrder);
+        OrderDto Create(CreateOrderDto createOrder);
         void Update(UpdateOrderDto updateOrder);
         void Delete(Guid id);
         bool OrderExists(Guid id);

@@ -1,54 +1,67 @@
 ﻿using ANPEL.WebDemo.EntityFrameworkCore;
+using ANPEL.WebDemo.Product;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Guids;
+using Volo.Abp.Uow;
 using Volo.Abp.Users;
 
 namespace ANPEL.WebDemo.Order
 {
     [Dependency(ServiceLifetime.Transient)]
-    public class OrderAppService :/* WebDemoAppService,*/ IOrderAppService
+    public class OrderAppService : /*WebDemoAppService, */IOrderAppService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly WebDemoDbContext _webDemoDbContext;
         private Volo.Abp.ObjectMapping.IObjectMapper _objectMapper;
         private ICurrentUser _currentUser;
         private IGuidGenerator _guidGenerator;
-
-        public OrderAppService(IOrderRepository orderRepository, WebDemoDbContext webDemoDbContext, Volo.Abp.ObjectMapping.IObjectMapper objectMapper, ICurrentUser currentUser, IGuidGenerator guidGenerator)
+        private readonly IProductRepository _productRepository;
+        private IUnitOfWork _unitOfWork;
+        public OrderAppService(IOrderRepository orderRepository, WebDemoDbContext webDemoDbContext, Volo.Abp.ObjectMapping.IObjectMapper objectMapper, ICurrentUser currentUser, IGuidGenerator guidGenerator, IProductRepository productRepository, IUnitOfWork unitOfWork)
         {
             _orderRepository = orderRepository;
             _webDemoDbContext = webDemoDbContext;
             _objectMapper = objectMapper;
             _currentUser = currentUser;
             _guidGenerator = guidGenerator;
+            _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public void Create(CreateOrderDto createOrderDto)
+        public OrderDto Create(CreateOrderDto createOrderDto)
         {
             Order order = new Order(_guidGenerator.Create());
             order = _objectMapper.Map(createOrderDto, order);
-            // 1、AutoMapper自动映射实体
-            //var configuration = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.CreateMap<CreateOrderDto, Order>();
-            //    cfg.CreateMap<CreateOrderItemDto, OrderItem>();
-            //});
 
-            //IMapper mapper = configuration.CreateMapper();
-
-            //Order order = new Order(_guidGenerator.Create());
-            //order = mapper.Map(createOrderDto, order);
-            order.UserId = _currentUser.Id.Value;
+            if (_currentUser.Id != null)
+            {
+                //Claim[] claim = _currentUser.GetAllClaims();
+                order.UserId = _currentUser.Id.Value;
+            }
             _orderRepository.Create(order);
+
+            //扣减库存
+            foreach (var orderItems in order.OrderItems)
+            {
+                Product.Product product = _productRepository.GetProductById(orderItems.ProductId);
+                product.ProductStock = product.ProductStock - orderItems.ItemCount;
+                _productRepository.Update(product);
+            }
+
+            //abp事务，最终执行保存到数据库
+            //await _unitOfWork.SaveChangesAsync();
+
+            return _objectMapper.Map<Order, OrderDto>(order);
         }
         public void Update(UpdateOrderDto updateOrderDto)
         {
