@@ -6,6 +6,7 @@ namespace ANPEL.WebDemo.Permissions
 {
     public class WebDemoPermissionDefinitionProvider : PermissionDefinitionProvider
     {
+        //定义授权
         public override void Define(IPermissionDefinitionContext context)
         {
             var myGroup = context.AddGroup(WebDemoPermissions.GroupName);
