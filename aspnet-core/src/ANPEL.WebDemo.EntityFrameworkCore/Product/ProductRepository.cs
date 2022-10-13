@@ -48,9 +48,9 @@ namespace ANPEL.WebDemo.Product
             //            ProductImages.Add(new ProductImage { Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad31"), ProductId = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"), ImageSort = 1, ImageStatus = "1", ImageUrl = "1" });
             //            _webDemoDbContext.Products.Add(Product);
             //            _webDemoDbContext.SaveChanges();
-            //            Product pp = new Product
+            //            Product pp = new Product(Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"))
             //            {
-            //                Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"),
+            //                //Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"),
             //                ProductSold = 1,
             //                ProductCode = "1",
             //                ProductDescription = "1",
@@ -70,7 +70,7 @@ namespace ANPEL.WebDemo.Product
             //        }
             //        catch (Exception ex)
             //        {
-            //transaction.Rollback();
+            //            transaction.Rollback();
             //        }
             //    };
             //}
@@ -86,9 +86,9 @@ namespace ANPEL.WebDemo.Product
             //            _webDemoDbContext.SaveChanges();
             //            //创建保存点，并在失败时回滚到该保存点：
             //            transaction.CreateSavepoint("savePoint1");
-            //            Product pp = new Product
+            //            Product pp = new Product(Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"))
             //            {
-            //                Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"),
+            //                //Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"),
             //                ProductSold = 2,
             //                ProductCode = "2",
             //                ProductDescription = "2",
@@ -127,9 +127,9 @@ namespace ANPEL.WebDemo.Product
             //            ProductImages.Add(new ProductImage { Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad31"), ProductId = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"), ImageSort = 2, ImageStatus = "2", ImageUrl = "2" });
             //            _webDemoDbContext.Products.Add(Product);
             //            _webDemoDbContext.SaveChanges();
-            //            Product pp = new Product
-            //            {
-            //                Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"),
+            //Product pp = new Product(Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"))
+            //{
+            ////Id = Guid.Parse("08daa1ef-a571-4c93-86a0-88c8071dad30"),
             //                ProductSold = 2,
             //                ProductCode = "2",
             //                ProductDescription = "2",
@@ -160,7 +160,7 @@ namespace ANPEL.WebDemo.Product
         /// 删除商品
         /// </summary>
         /// <param name="Product"></param>
-        public void Delete(Product Product)
+            public void Delete(Product Product)
         {
             _webDemoDbContext.Remove(Product);
             _webDemoDbContext.SaveChanges();

@@ -56,9 +56,9 @@ namespace ANPEL.WebDemo.Controllers
             return order;
         }
         [HttpPost]
-        public ActionResult<OrderDto> CreateProduct(CreateOrderDto createOrderDto)
+        public async Task<OrderDto> CreateProduct(CreateOrderDto createOrderDto)
         {
-            return _orderAppService.Create(createOrderDto);
+            return await _orderAppService.Create(createOrderDto);
             //return CreatedAtAction("GetOrder", createOrderDto);
         }
         [HttpGet]

@@ -10,7 +10,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace ANPEL.WebDemo.Product
 {
-    public class Product/* : FullAuditedAggregateRoot<Guid>*/: AggregateRoot<Guid>
+    public class Product : /*FullAuditedAggregateRoot<Guid>:*/ AggregateRoot<Guid>
     {
         //public  Guid Id { set; get; } // 商品主键
         public string ProductCode { set; get; }    //商品编码

@@ -22,7 +22,7 @@ namespace ANPEL.WebDemo.EntityFrameworkCore
     public class WebDemoDbContext :
         AbpDbContext<WebDemoDbContext>,
         IIdentityDbContext,
-        ITenantManagementDbContext
+        ITenantManagementDbContext  
     {
         /* Add DbSet properties for your Aggregate Roots / Entities here. */
 

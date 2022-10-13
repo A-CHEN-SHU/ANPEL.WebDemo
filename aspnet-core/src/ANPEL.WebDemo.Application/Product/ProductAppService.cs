@@ -18,7 +18,7 @@ namespace ANPEL.WebDemo.Product
     /// 商品服务实现
     /// </summary>
     [Dependency(ServiceLifetime.Transient)]
-    public class ProductAppService :/* WebDemoAppService, */IProductAppService
+    public class ProductAppService : /*WebDemoAppService,*/ IProductAppService
     {
         public IProductRepository _productRepository; // 商品仓储
 

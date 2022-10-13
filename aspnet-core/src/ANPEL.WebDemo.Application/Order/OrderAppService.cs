@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 using Volo.Abp.Uow;
 using Volo.Abp.Users;
@@ -18,7 +19,7 @@ using Volo.Abp.Users;
 namespace ANPEL.WebDemo.Order
 {
     [Dependency(ServiceLifetime.Transient)]
-    public class OrderAppService : /*WebDemoAppService, */IOrderAppService
+    public class OrderAppService : /*WebDemoAppService,*/ IOrderAppService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly WebDemoDbContext _webDemoDbContext;
@@ -26,8 +27,10 @@ namespace ANPEL.WebDemo.Order
         private ICurrentUser _currentUser;
         private IGuidGenerator _guidGenerator;
         private readonly IProductRepository _productRepository;
-        private IUnitOfWork _unitOfWork;
-        public OrderAppService(IOrderRepository orderRepository, WebDemoDbContext webDemoDbContext, Volo.Abp.ObjectMapping.IObjectMapper objectMapper, ICurrentUser currentUser, IGuidGenerator guidGenerator, IProductRepository productRepository, IUnitOfWork unitOfWork)
+        private IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IRepository<Order> _orderRepositorys;
+        private readonly IRepository<Product.Product> _productRepositorys;
+        public OrderAppService(IOrderRepository orderRepository, WebDemoDbContext webDemoDbContext, Volo.Abp.ObjectMapping.IObjectMapper objectMapper, ICurrentUser currentUser, IGuidGenerator guidGenerator, IProductRepository productRepository, IUnitOfWorkManager unitOfWorkManager, IRepository<Order> orderRepositorys, IRepository<Product.Product> productRepositorys)
         {
             _orderRepository = orderRepository;
             _webDemoDbContext = webDemoDbContext;
@@ -35,12 +38,15 @@ namespace ANPEL.WebDemo.Order
             _currentUser = currentUser;
             _guidGenerator = guidGenerator;
             _productRepository = productRepository;
-            _unitOfWork = unitOfWork;
+            _unitOfWorkManager = unitOfWorkManager;
+            _orderRepositorys = orderRepositorys;
+            _productRepositorys = productRepositorys;
         }
-
-        public OrderDto Create(CreateOrderDto createOrderDto)
+        //[UnitOfWork(false)]//禁用事务
+        public virtual async Task<OrderDto> Create(CreateOrderDto createOrderDto)
         {
             Order order = new Order(_guidGenerator.Create());
+
             order = _objectMapper.Map(createOrderDto, order);
 
             if (_currentUser.Id != null)
@@ -48,18 +54,20 @@ namespace ANPEL.WebDemo.Order
                 //Claim[] claim = _currentUser.GetAllClaims();
                 order.UserId = _currentUser.Id.Value;
             }
-            _orderRepository.Create(order);
+            await _orderRepositorys.InsertAsync(order,true);
+            //var a = _orderRepositorys.Where(x=>x.Id==order.Id).FirstOrDefault();
+            //await _unitOfWorkManager.Current.SaveChangesAsync();
+            //var b = _orderRepositorys.GetAsync(x => x.Id == order.Id);
 
+            //_orderRepository.Create(order);
             //扣减库存
             foreach (var orderItems in order.OrderItems)
             {
                 Product.Product product = _productRepository.GetProductById(orderItems.ProductId);
                 product.ProductStock = product.ProductStock - orderItems.ItemCount;
-                _productRepository.Update(product);
+                //_productRepository.Update(product);
+                await _productRepositorys.UpdateAsync(product);
             }
-
-            //abp事务，最终执行保存到数据库
-            //await _unitOfWork.SaveChangesAsync();
 
             return _objectMapper.Map<Order, OrderDto>(order);
         }

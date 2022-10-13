@@ -30,6 +30,7 @@ namespace ANPEL.WebDemo
                 //使用自定义map
                 options.AddProfile<WebDemoApplicationAutoMapperProfile>();
             });
+
         }
     }
 }
