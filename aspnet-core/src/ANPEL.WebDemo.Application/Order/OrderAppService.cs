@@ -42,7 +42,7 @@ namespace ANPEL.WebDemo.Order
             _orderRepositorys = orderRepositorys;
             _productRepositorys = productRepositorys;
         }
-        //[UnitOfWork(false)]//禁用事务
+        [UnitOfWork(false)]//禁用事务
         public virtual async Task<OrderDto> Create(CreateOrderDto createOrderDto)
         {
             Order order = new Order(_guidGenerator.Create());
@@ -54,12 +54,14 @@ namespace ANPEL.WebDemo.Order
                 //Claim[] claim = _currentUser.GetAllClaims();
                 order.UserId = _currentUser.Id.Value;
             }
-            await _orderRepositorys.InsertAsync(order,true);
+            //_orderRepository.Create(order);
+
+            await _orderRepositorys.InsertAsync(order, true);
             //var a = _orderRepositorys.Where(x=>x.Id==order.Id).FirstOrDefault();
             //await _unitOfWorkManager.Current.SaveChangesAsync();
+            await _unitOfWorkManager.Current.CompleteAsync();
             //var b = _orderRepositorys.GetAsync(x => x.Id == order.Id);
 
-            //_orderRepository.Create(order);
             //扣减库存
             foreach (var orderItems in order.OrderItems)
             {
